@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { UserButton, SignedIn, SignedOut } from "@clerk/nextjs";
 import { useCart } from "./CartProvider";
@@ -11,8 +12,9 @@ export default function Navbar() {
     <nav className="sticky top-0 z-50 w-full backdrop-blur-[16px] bg-[#F8F5EE]/80 border-b border-[#DDD3C3]/50 h-[78px] flex items-center">
       <div className="container mx-auto px-4 md:px-6 flex justify-between items-center w-full max-w-7xl">
         <Link href="/" className="flex items-center gap-2">
-          <span className="font-heading font-bold text-2xl text-[#222222]">
-            Kishan<span className="text-[#D9A441]">Co</span>
+          <Image src="/logo.png" alt="KishanCo Logo" width={50} height={50} className="object-contain" />
+          <span className="font-heading font-bold text-2xl">
+            <span className="text-[#A63D2F]">Kishan</span><span className="text-[#D9A441]">Co</span>
           </span>
         </Link>
         <div className="hidden md:flex gap-8 items-center text-[#222222] font-medium">

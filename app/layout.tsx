@@ -21,6 +21,13 @@ const poppins = Poppins({
 export const metadata: Metadata = {
   title: "KishanCo | Pure Seeds. Better Harvests.",
   description: "A modern trusted agriculture company built by real professionals for real farmers.",
+  icons: {
+    icon: "/logo.png",
+  },
+};
+
+export const viewport = {
+  themeColor: "#F8F5EE",
 };
 
 export default function RootLayout({
