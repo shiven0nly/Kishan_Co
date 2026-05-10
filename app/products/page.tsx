@@ -9,7 +9,6 @@ const products = [
   { id: "wheat", name: "Premium Wheat Seeds", price: "₹45", image: "/wheat.jpg", category: "Wheat", stock: "In Stock" },
   { id: "mustard", name: "Hybrid Mustard Seeds", price: "₹65", image: "/mustard.jpg", category: "Mustard", stock: "In Stock" },
   { id: "soyabean", name: "High-Yield Soyabean", price: "₹55", image: "/soyabean.jpg", category: "Soyabean", stock: "In Stock" },
-  { id: "wheat-sharbati", name: "Sharbati Wheat Seeds", price: "₹52", image: "/wheat.jpg", category: "Wheat", stock: "Low Stock" },
 ];
 
 export default function ProductsPage() {
