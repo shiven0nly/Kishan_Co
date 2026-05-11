@@ -17,7 +17,7 @@ export default function Navbar() {
         <Link href="/" className="flex items-center gap-2">
           <Image src="/logo.png" alt="KishanCo Logo" width={50} height={50} className="object-contain" />
           <span className="font-heading font-bold text-2xl">
-            <span className="text-[#A63D2F]">Kishan</span><span className="text-[#D9A441]">Co</span>
+            <span className="text-[#A63D2F]">Kishan </span><span className="text-[#D9A441]">Co.</span>
           </span>
         </Link>
         <div className="hidden md:flex gap-8 items-center text-[#222222] font-medium">

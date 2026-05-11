@@ -7,8 +7,8 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
           <div className="space-y-4">
             <Link href="/" className="flex items-center gap-2">
-              <span className="font-heading font-bold text-2xl">
-                Kishan<span className="text-[#D9A441]">Co</span>
+              <span className="font-heading font-bold text-2xl text-[#A63D2F]">
+                Kishan <span className="text-[#D9A441]">Co.</span>
               </span>
             </Link>
             <p className="text-[#C8C1B5] text-sm max-w-xs">
