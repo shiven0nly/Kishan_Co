@@ -56,11 +56,13 @@ export const getUserOrders = query({
   },
 });
 
+const ADMIN_EMAILS = ["namangalav2@gmail.com", "shiven676@gmail.com"];
+
 export const getAllOrders = query({
   args: {},
   handler: async (ctx) => {
     const identity = await ctx.auth.getUserIdentity();
-    if (!identity || identity.email !== "namangalav2@gmail.com") {
+    if (!identity || !ADMIN_EMAILS.includes(identity.email!)) {
       throw new Error("Unauthorized: Admin access required");
     }
     return await ctx.db.query("orders").order("desc").collect();
@@ -74,7 +76,7 @@ export const updateOrderStatus = mutation({
   },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
-    if (!identity || identity.email !== "namangalav2@gmail.com") {
+    if (!identity || !ADMIN_EMAILS.includes(identity.email!)) {
       throw new Error("Unauthorized: Admin access required");
     }
     await ctx.db.patch(args.orderId, { status: args.status });

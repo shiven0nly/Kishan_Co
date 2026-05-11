@@ -9,7 +9,8 @@ export default function Navbar() {
   const { cartCount } = useCart();
   const { user } = useUser();
   
-  const isAdmin = user?.primaryEmailAddress?.emailAddress === "namangalav2@gmail.com";
+  const ADMIN_EMAILS = ["namangalav2@gmail.com", "shiven676@gmail.com"];
+  const isAdmin = ADMIN_EMAILS.includes(user?.primaryEmailAddress?.emailAddress || "");
 
   return (
     <nav className="sticky top-0 z-50 w-full backdrop-blur-[16px] bg-[#F8F5EE]/80 border-b border-[#DDD3C3]/50 h-[78px] flex items-center">

@@ -15,7 +15,8 @@ export default function AdminDashboard() {
   const { user, isLoaded } = useUser();
   const router = useRouter();
   
-  const isAdmin = user?.primaryEmailAddress?.emailAddress === "namangalav2@gmail.com";
+  const ADMIN_EMAILS = ["namangalav2@gmail.com", "shiven676@gmail.com"];
+  const isAdmin = ADMIN_EMAILS.includes(user?.primaryEmailAddress?.emailAddress || "");
 
   useEffect(() => {
     if (isLoaded && !isAdmin) {
