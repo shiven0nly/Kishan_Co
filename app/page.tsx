@@ -3,12 +3,49 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ShieldCheck, Leaf, Package, Truck, ArrowRight } from "lucide-react";
+import { ShieldCheck, Leaf, Package, Truck, ArrowRight, CheckCircle } from "lucide-react";
 import Testimonials from "@/components/Testimonials";
+import { useCart } from "@/components/CartProvider";
+import { useState } from "react";
 
 export default function Home() {
+  const { addToCart } = useCart();
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [addedItem, setAddedItem] = useState("");
+
+  const handleAddToCart = (product: any) => {
+    addToCart({
+      productId: product.id,
+      name: product.name,
+      price: parseInt(product.price.replace("₹", "")),
+      quantity: 5,
+      image: product.image
+    });
+    setAddedItem(product.name);
+    setShowSuccess(true);
+    setTimeout(() => setShowSuccess(false), 3000);
+  };
+
   return (
-    <div className="w-full">
+    <div className="w-full relative">
+      {/* Success Dialog Overlay */}
+      {showSuccess && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            className="bg-white rounded-[24px] p-8 max-w-sm w-full shadow-2xl flex flex-col items-center text-center"
+          >
+            <div className="w-16 h-16 bg-[#EBF1E6] rounded-full flex items-center justify-center mb-4 text-[#6D7C4A]">
+              <CheckCircle size={32} />
+            </div>
+            <h3 className="font-heading font-bold text-2xl text-[#222222] mb-2">Added to Cart!</h3>
+            <p className="text-[#5F5B53]">
+              5 KG of {addedItem} has been successfully added to your cart.
+            </p>
+          </motion.div>
+        </div>
+      )}
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-gradient-to-b from-[#F8F5EE] to-[#F3EEDF] py-20 lg:py-32">
         <div className="container mx-auto px-4 md:px-6 max-w-7xl">
@@ -100,7 +137,7 @@ export default function Home() {
             {[
               { id: "wheat", name: "Premium Wheat Seeds", price: "₹45", image: "/wheat.jpg" },
               { id: "mustard", name: "Hybrid Mustard Seeds", price: "₹65", image: "/mustard.jpg" },
-              { id: "soyabean", name: "High-Yield Soyabean", price: "₹55", image: "/soyabean.jpg" }
+              { id: "garlic", name: "Premium Garlic Bulbs", price: "₹120", image: "/garlic.jpg" }
             ].map((product) => (
               <motion.div 
                 key={product.id}
@@ -120,7 +157,10 @@ export default function Home() {
                     <Link href={`/products/${product.id}`} className="flex-1 bg-transparent border border-[#DDD3C3] text-[#222222] hover:bg-[#F3EEDF] py-3 rounded-[12px] text-center transition font-medium text-sm">
                       Details
                     </Link>
-                    <button className="flex-1 bg-[#A63D2F] text-white hover:bg-[#8B3125] py-3 rounded-[12px] transition shadow-btn font-medium text-sm">
+                    <button 
+                      onClick={() => handleAddToCart(product)}
+                      className="flex-1 bg-[#A63D2F] text-white hover:bg-[#8B3125] py-3 rounded-[12px] transition shadow-btn font-medium text-sm"
+                    >
                       Add to Cart
                     </button>
                   </div>

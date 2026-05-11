@@ -28,7 +28,7 @@ export default function Footer() {
             <ul className="space-y-2 text-[#C8C1B5]">
               <li><Link href="/products/wheat" className="hover:text-[#D9A441] transition">Wheat Seeds</Link></li>
               <li><Link href="/products/mustard" className="hover:text-[#D9A441] transition">Mustard Seeds</Link></li>
-              <li><Link href="/products/soyabean" className="hover:text-[#D9A441] transition">Soyabean Seeds</Link></li>
+              <li><Link href="/products/garlic" className="hover:text-[#D9A441] transition">Premium Garlic</Link></li>
             </ul>
           </div>
           <div>

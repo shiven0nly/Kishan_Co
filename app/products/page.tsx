@@ -3,17 +3,54 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRight, Filter } from "lucide-react";
+import { ArrowRight, Filter, CheckCircle } from "lucide-react";
+import { useCart } from "@/components/CartProvider";
+import { useState } from "react";
 
 const products = [
   { id: "wheat", name: "Premium Wheat Seeds", price: "₹45", image: "/wheat.jpg", category: "Wheat", stock: "In Stock" },
   { id: "mustard", name: "Hybrid Mustard Seeds", price: "₹65", image: "/mustard.jpg", category: "Mustard", stock: "In Stock" },
-  { id: "soyabean", name: "High-Yield Soyabean", price: "₹55", image: "/soyabean.jpg", category: "Soyabean", stock: "In Stock" },
+  { id: "garlic", name: "Premium Garlic Bulbs", price: "₹120", image: "/garlic.jpg", category: "Garlic", stock: "In Stock" },
 ];
 
 export default function ProductsPage() {
+  const { addToCart } = useCart();
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [addedItem, setAddedItem] = useState("");
+
+  const handleAddToCart = (product: any) => {
+    addToCart({
+      productId: product.id,
+      name: product.name,
+      price: parseInt(product.price.replace("₹", "")),
+      quantity: 5,
+      image: product.image
+    });
+    setAddedItem(product.name);
+    setShowSuccess(true);
+    setTimeout(() => setShowSuccess(false), 3000);
+  };
+
   return (
-    <div className="py-12 md:py-20 bg-[#F8F5EE] min-h-screen">
+    <div className="py-12 md:py-20 bg-[#F8F5EE] min-h-screen relative">
+      {/* Success Dialog Overlay */}
+      {showSuccess && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            className="bg-white rounded-[24px] p-8 max-w-sm w-full shadow-2xl flex flex-col items-center text-center"
+          >
+            <div className="w-16 h-16 bg-[#EBF1E6] rounded-full flex items-center justify-center mb-4 text-[#6D7C4A]">
+              <CheckCircle size={32} />
+            </div>
+            <h3 className="font-heading font-bold text-2xl text-[#222222] mb-2">Added to Cart!</h3>
+            <p className="text-[#5F5B53]">
+              5 KG of {addedItem} has been successfully added to your cart.
+            </p>
+          </motion.div>
+        </div>
+      )}
       <div className="container mx-auto px-4 md:px-6 max-w-7xl">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-6">
           <div>
@@ -60,7 +97,10 @@ export default function ProductsPage() {
                   <Link href={`/products/${product.id}`} className="flex-1 bg-transparent border border-[#DDD3C3] text-[#222222] hover:bg-[#F3EEDF] py-3 rounded-[12px] text-center transition font-medium text-sm">
                     Details
                   </Link>
-                  <button className="flex-1 bg-[#A63D2F] text-white hover:bg-[#8B3125] py-3 rounded-[12px] transition shadow-btn font-medium text-sm">
+                  <button 
+                    onClick={() => handleAddToCart(product)}
+                    className="flex-1 bg-[#A63D2F] text-white hover:bg-[#8B3125] py-3 rounded-[12px] transition shadow-btn font-medium text-sm"
+                  >
                     Add
                   </button>
                 </div>

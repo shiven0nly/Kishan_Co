@@ -20,7 +20,9 @@ export const createOrder = mutation({
       state: v.string(),
       pincode: v.string(),
     }),
-    paymentMethod: v.string(),
+    scheduledCallDate: v.optional(v.string()),
+    scheduledCallTime: v.optional(v.string()),
+    paymentMethod: v.optional(v.string()), // Optional to prevent validation errors during migration
   },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
@@ -32,6 +34,8 @@ export const createOrder = mutation({
       totalAmount: args.totalAmount,
       status: "pending",
       shippingAddress: args.shippingAddress,
+      scheduledCallDate: args.scheduledCallDate,
+      scheduledCallTime: args.scheduledCallTime,
       paymentMethod: args.paymentMethod,
     });
     return orderId;
@@ -55,8 +59,11 @@ export const getUserOrders = query({
 export const getAllOrders = query({
   args: {},
   handler: async (ctx) => {
-    // Admin endpoint — should be protected at UI level
-    return await ctx.db.query("orders").order("desc").take(200);
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity || identity.email !== "namangalav2@gmail.com") {
+      throw new Error("Unauthorized: Admin access required");
+    }
+    return await ctx.db.query("orders").order("desc").collect();
   },
 });
 
@@ -66,6 +73,10 @@ export const updateOrderStatus = mutation({
     status: v.string(),
   },
   handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity || identity.email !== "namangalav2@gmail.com") {
+      throw new Error("Unauthorized: Admin access required");
+    }
     await ctx.db.patch(args.orderId, { status: args.status });
   },
 });

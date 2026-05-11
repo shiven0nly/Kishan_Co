@@ -36,19 +36,19 @@ const productsData: Record<string, any> = {
     harvesting: "Ready for harvest in 110-140 days when 75% of the pods turn yellowish and moisture content drops to 12-15%. Delaying harvest can cause pod shattering.",
     benefits: "Yield expectation: 20-25 quintals per hectare. With our high-oil hybrid seeds, oil extraction efficiency is 5% higher. Selling at expected market rates of ₹5600/quintal provides a lucrative ROI, practically doubling standard profits."
   },
-  "soyabean": { 
-    id: "soyabean", 
-    name: "High-Yield Soyabean", 
-    price: 55, 
-    image: "/soyabean.jpg", 
-    category: "Soyabean", 
+  "garlic": { 
+    id: "garlic", 
+    name: "Premium Garlic Bulbs", 
+    price: 120, 
+    image: "/garlic.jpg", 
+    category: "Garlic", 
     stock: "In Stock", 
-    desc: "Disease-resistant soyabean varieties perfect for commercial farming.",
-    longDesc: "Soyabean is an extensively grown leguminous crop serving as a primary source of vegetable oil and protein. Our disease-resistant variety is treated to prevent yellow mosaic virus, ensuring a healthy crop cycle.",
-    sowing: "Sow 3-4 cm deep in well-drained, fertile soil. Line spacing of 45 cm and plant spacing of 5-7 cm is ideal. Sow with the onset of monsoon (June to early July).",
-    weather: "Requires a warm and moist climate. Optimum temperature for growth is 26-30°C. Heavy rainfall during flowering can be detrimental, but consistent moisture is required otherwise.",
-    harvesting: "Harvest in 90-120 days when leaves turn yellow and drop off, and pods dry out completely, containing around 13-14% moisture.",
-    benefits: "Expected yield of 25-30 quintals per hectare. Our seeds reduce pesticide costs by 20% due to inherent disease resistance. With market prices hovering around ₹4600/quintal, our soyabean seeds offer a highly stable and profitable crop cycle."
+    desc: "High-quality, pungent garlic bulbs perfect for seed cultivation and high-yield harvests.",
+    longDesc: "Garlic is a staple culinary herb known for its strong aroma and medicinal properties. Our premium variety is specially selected for large bulb size, uniform cloves, and high resistance to soil-borne diseases.",
+    sowing: "Plant individual cloves with the pointed end up, 5-8 cm deep and 10-15 cm apart. Row spacing should be 30 cm. Best planted in late autumn (October-November).",
+    weather: "Requires a cold period (vernalization) for bulb development. Thrives in full sun and well-drained, fertile soil. Ideal temperature range is 12°C to 24°C.",
+    harvesting: "Harvest in 150-180 days when the bottom 2-3 leaves turn brown and dry out. Cure the bulbs in a dry, shaded area for 2-3 weeks after digging them out.",
+    benefits: "Expect a yield of 80-100 quintals per hectare. Our premium seed cloves ensure zero fungal infections and uniform growth. Selling at market rates of ₹8000-12000 per quintal yields exceptional returns."
   },
 };
 
@@ -69,6 +69,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
       name: product.name,
       price: product.price,
       quantity,
+      image: product.image,
     });
     setShowSuccess(true);
     setTimeout(() => setShowSuccess(false), 3000);

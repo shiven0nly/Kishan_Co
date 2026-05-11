@@ -22,7 +22,9 @@ export default defineSchema({
       state: v.string(),
       pincode: v.string(),
     }),
-    paymentMethod: v.string(),
+    scheduledCallDate: v.optional(v.string()),
+    scheduledCallTime: v.optional(v.string()),
+    paymentMethod: v.optional(v.string()), // Added for backward compatibility with legacy orders
   }).index("by_user", ["userId"]),
 
   testimonials: defineTable({

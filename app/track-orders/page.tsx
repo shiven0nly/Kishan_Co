@@ -139,6 +139,21 @@ export default function TrackOrdersPage() {
                       ))}
                     </div>
 
+                    {/* Scheduled Call Info */}
+                    {order.scheduledCallDate && (
+                      <div className="bg-[#D9A441]/5 border border-[#D9A441]/20 rounded-[16px] p-4 mb-6">
+                        <div className="flex items-center gap-3 text-[#222222]">
+                          <Clock size={20} className="text-[#D9A441]" />
+                          <div>
+                            <span className="text-xs font-bold text-[#5F5B53] uppercase block">Scheduled Call</span>
+                            <span className="font-bold">{order.scheduledCallDate}</span>
+                            <span className="text-[#5F5B53] mx-2">at</span>
+                            <span className="font-bold">{order.scheduledCallTime}</span>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
                     {/* Footer */}
                     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center border-t border-[#EEE6D8] pt-5 gap-3">
                       <div className="text-sm text-[#5F5B53]">

@@ -50,7 +50,7 @@ export const seedFakeTestimonials = mutation({
       {
         name: "Amit Singh",
         role: "Farmer, Haryana",
-        content: "Affordable pricing without compromising on quality. The soyabean seeds showed great resistance to diseases during the monsoon.",
+        content: "Affordable pricing without compromising on quality. The premium garlic bulbs showed great resistance to diseases and have excellent pungency.",
         rating: 4,
         isApproved: true,
       }

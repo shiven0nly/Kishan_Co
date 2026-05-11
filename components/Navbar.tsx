@@ -2,11 +2,14 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { UserButton, SignedIn, SignedOut } from "@clerk/nextjs";
+import { UserButton, SignedIn, SignedOut, useUser } from "@clerk/nextjs";
 import { useCart } from "./CartProvider";
 
 export default function Navbar() {
   const { cartCount } = useCart();
+  const { user } = useUser();
+  
+  const isAdmin = user?.primaryEmailAddress?.emailAddress === "namangalav2@gmail.com";
 
   return (
     <nav className="sticky top-0 z-50 w-full backdrop-blur-[16px] bg-[#F8F5EE]/80 border-b border-[#DDD3C3]/50 h-[78px] flex items-center">
@@ -37,12 +40,13 @@ export default function Navbar() {
             )}
           </Link>
           <SignedIn>
-            <Link href="/admin" className="text-[#222222] hover:text-[#D9A441] transition text-sm font-medium mr-2">Admin</Link>
+            {isAdmin && (
+              <Link href="/admin" className="text-[#222222] hover:text-[#D9A441] transition text-sm font-medium mr-2">Admin</Link>
+            )}
             <UserButton afterSignOutUrl="/" />
           </SignedIn>
           <SignedOut>
-            <Link href="/sign-in" className="text-[#A63D2F] font-medium hover:bg-[#A63D2F]/10 px-4 py-2 rounded-[14px] transition">Log in</Link>
-            <Link href="/sign-up" className="bg-[#A63D2F] text-white hover:bg-[#8B3125] px-4 py-2 rounded-[14px] transition shadow-btn font-medium">Sign up</Link>
+            <Link href="/sign-up" className="bg-[#A63D2F] text-white hover:bg-[#8B3125] px-6 py-2.5 rounded-[14px] transition shadow-btn font-medium">Sign up</Link>
           </SignedOut>
         </div>
       </div>

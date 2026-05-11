@@ -5,13 +5,34 @@ import Link from "next/link";
 import { Package, Users, IndianRupee, TrendingUp, Search, Eye, Download, XCircle } from "lucide-react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import { useUser } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import * as XLSX from 'xlsx';
 
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState("overview");
+  const { user, isLoaded } = useUser();
+  const router = useRouter();
+  
+  const isAdmin = user?.primaryEmailAddress?.emailAddress === "namangalav2@gmail.com";
+
+  useEffect(() => {
+    if (isLoaded && !isAdmin) {
+      router.push("/");
+    }
+  }, [isLoaded, isAdmin, router]);
 
   const orders = useQuery(api.orders.getAllOrders);
   const updateOrderStatus = useMutation(api.orders.updateOrderStatus);
+
+  if (!isLoaded || !isAdmin) {
+    return (
+      <div className="flex items-center justify-center h-screen bg-[#F8F5EE]">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#D9A441]"></div>
+      </div>
+    );
+  }
 
   const handleExportOrders = () => {
     if (!orders) return;
@@ -23,8 +44,9 @@ export default function AdminDashboard() {
       "Address": `${order.shippingAddress.address}, ${order.shippingAddress.city}, ${order.shippingAddress.state} - ${order.shippingAddress.pincode}`,
       "Total Amount": order.totalAmount,
       "Status": order.status,
-      "Payment Method": order.paymentMethod,
-      "Date": new Date(order._creationTime).toLocaleString(),
+      "Call Date": order.scheduledCallDate || "N/A",
+      "Call Time": order.scheduledCallTime || "N/A",
+      "Date Placed": new Date(order._creationTime).toLocaleString(),
       "Items": order.items.map(item => `${item.name} (${item.quantity})`).join(", ")
     }));
 
@@ -192,6 +214,7 @@ export default function AdminDashboard() {
                     <th className="px-6 py-4 font-medium">Order ID</th>
                     <th className="px-6 py-4 font-medium">Customer</th>
                     <th className="px-6 py-4 font-medium">Amount</th>
+                    <th className="px-6 py-4 font-medium">Scheduled Call</th>
                     <th className="px-6 py-4 font-medium">Status</th>
                     <th className="px-6 py-4 font-medium">Actions</th>
                   </tr>
@@ -205,6 +228,10 @@ export default function AdminDashboard() {
                         <div className="text-xs text-gray-500">{order.shippingAddress.phone}</div>
                       </td>
                       <td className="px-6 py-4 font-medium">₹{order.totalAmount}</td>
+                      <td className="px-6 py-4 text-sm">
+                        <div className="font-bold">{order.scheduledCallDate || "N/A"}</div>
+                        <div className="text-gray-500">{order.scheduledCallTime || ""}</div>
+                      </td>
                       <td className="px-6 py-4">
                         <select 
                           value={order.status}
@@ -234,8 +261,8 @@ export default function AdminDashboard() {
                       </td>
                     </tr>
                   ))}
-                  {!orders && <tr><td colSpan={5} className="px-6 py-4 text-center">Loading...</td></tr>}
-                  {orders?.length === 0 && <tr><td colSpan={5} className="px-6 py-4 text-center">No orders found.</td></tr>}
+                  {!orders && <tr><td colSpan={6} className="px-6 py-4 text-center">Loading...</td></tr>}
+                  {orders?.length === 0 && <tr><td colSpan={6} className="px-6 py-4 text-center">No orders found.</td></tr>}
                 </tbody>
               </table>
             </div>

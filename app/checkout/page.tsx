@@ -20,8 +20,8 @@ export default function CheckoutPage() {
   const { cartItems, clearCart } = useCart();
 
   const [step, setStep] = useState(1);
-  const [paymentMethod, setPaymentMethod] = useState("");
-  const [fileUploaded, setFileUploaded] = useState(false);
+  const [callDate, setCallDate] = useState("");
+  const [callTimeSlot, setCallTimeSlot] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
 
@@ -41,8 +41,8 @@ export default function CheckoutPage() {
   const prevStep = () => setStep((s) => Math.max(1, s - 1));
 
   const handleConfirmOrder = async () => {
-    if (!paymentMethod) {
-      setError("Please select a payment method.");
+    if (!callDate || !callTimeSlot) {
+      setError("Please select a date and time slot for the call.");
       return;
     }
 
@@ -50,22 +50,18 @@ export default function CheckoutPage() {
     setError("");
 
     try {
-      const items =
-        cartItems.length > 0
-          ? cartItems.map((item) => ({
-              productId: item.productId,
-              name: item.name,
-              quantity: item.quantity,
-              price: item.price,
-            }))
-          : [
-              {
-                productId: "wheat",
-                name: "Premium Wheat Seeds",
-                quantity: 50,
-                price: 55,
-              },
-            ];
+      if (cartItems.length === 0) {
+        setError("Your cart is empty. Please add items before checking out.");
+        setIsSubmitting(false);
+        return;
+      }
+
+      const items = cartItems.map((item) => ({
+        productId: item.productId,
+        name: item.name,
+        quantity: item.quantity,
+        price: item.price,
+      }));
 
       await createOrder({
         items,
@@ -78,7 +74,9 @@ export default function CheckoutPage() {
           state: "Uttar Pradesh",
           pincode: pincode || "000000",
         },
-        paymentMethod,
+        scheduledCallDate: callDate,
+        scheduledCallTime: callTimeSlot,
+        paymentMethod: "Scheduled Call",
       });
 
       clearCart();
@@ -287,13 +285,13 @@ export default function CheckoutPage() {
                     onClick={nextStep}
                     className="bg-[#A63D2F] text-white px-8 py-4 rounded-xl font-bold hover:bg-[#8B3125] transition shadow-medium"
                   >
-                    Continue to Payment
+                    Continue to Scheduling
                   </button>
                 </div>
               </motion.div>
             )}
 
-            {/* STEP 2: Payment Method */}
+            {/* STEP 2: Schedule Call */}
             {step === 2 && (
               <motion.div
                 key="step2"
@@ -302,145 +300,63 @@ export default function CheckoutPage() {
                 exit={{ opacity: 0, x: -20 }}
               >
                 <h2 className="font-heading text-2xl font-bold text-[#222222] mb-6">
-                  Select Payment Method
+                  Schedule Your Call & Fix Date
                 </h2>
 
-                <div className="space-y-4 mb-8">
-                  {/* Online Payment Option */}
-                  <button
-                    onClick={() => setPaymentMethod("online")}
-                    className={`w-full text-left border-2 rounded-[16px] p-6 transition flex items-center gap-4 ${
-                      paymentMethod === "online"
-                        ? "border-[#D9A441] bg-[#F3EEDF]/50"
-                        : "border-[#DDD3C3] hover:border-[#D9A441]/50"
-                    }`}
-                  >
-                    <div
-                      className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
-                        paymentMethod === "online"
-                          ? "border-[#D9A441]"
-                          : "border-[#DDD3C3]"
-                      }`}
-                    >
-                      {paymentMethod === "online" && (
-                        <div className="w-3 h-3 bg-[#D9A441] rounded-full" />
-                      )}
-                    </div>
-                    <CreditCard className="text-[#5F5B53]" size={28} />
-                    <div>
-                      <h3 className="font-bold text-[#222222]">
-                        Online Payment (Full)
-                      </h3>
-                      <p className="text-sm text-[#5F5B53]">
-                        Pay securely via UPI, Card, or Netbanking.
-                      </p>
-                    </div>
-                  </button>
+                <div className="space-y-6 mb-8">
+                  <div className="bg-[#F8F5EE] border border-[#DDD3C3] rounded-[24px] p-6 md:p-8">
+                    <p className="text-[#5F5B53] mb-6">
+                      Our agriculture experts will call you to confirm your
+                      requirements, provide final pricing with delivery, and
+                      answer any questions you have.
+                    </p>
 
-                  {/* COD Option */}
-                  <button
-                    onClick={() => setPaymentMethod("cod")}
-                    className={`w-full text-left border-2 rounded-[16px] p-6 transition flex items-center gap-4 ${
-                      paymentMethod === "cod"
-                        ? "border-[#D9A441] bg-[#F3EEDF]/50"
-                        : "border-[#DDD3C3] hover:border-[#D9A441]/50"
-                    }`}
-                  >
-                    <div
-                      className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
-                        paymentMethod === "cod"
-                          ? "border-[#D9A441]"
-                          : "border-[#DDD3C3]"
-                      }`}
-                    >
-                      {paymentMethod === "cod" && (
-                        <div className="w-3 h-3 bg-[#D9A441] rounded-full" />
-                      )}
-                    </div>
-                    <Banknote className="text-[#5F5B53]" size={28} />
-                    <div>
-                      <h3 className="font-bold text-[#222222]">
-                        Cash on Delivery (COD)
-                      </h3>
-                      <p className="text-sm text-[#5F5B53]">
-                        Requires 20% advance payment.
-                      </p>
-                    </div>
-                  </button>
-                </div>
-
-                {/* COD Warning & Upload UI */}
-                <AnimatePresence>
-                  {paymentMethod === "cod" && (
-                    <motion.div
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: "auto" }}
-                      exit={{ opacity: 0, height: 0 }}
-                      className="overflow-hidden"
-                    >
-                      <div className="bg-[#A63D2F]/10 border border-[#A63D2F]/20 rounded-[16px] p-6 mb-8">
-                        <div className="flex items-start gap-3 text-[#A63D2F]">
-                          <AlertTriangle
-                            size={24}
-                            className="flex-shrink-0 mt-1"
-                          />
-                          <div>
-                            <h4 className="font-bold mb-2">
-                              20% Advance Payment Required
-                            </h4>
-                            <p className="text-sm mb-4">
-                              To confirm your COD order of ₹{total}, please
-                              transfer ₹{advanceAmount} via the QR code below
-                              and upload the screenshot.
-                            </p>
-                            <div className="flex flex-col sm:flex-row gap-6 items-center">
-                              <div className="w-32 h-32 bg-white border-2 border-dashed border-[#A63D2F] rounded-[12px] flex items-center justify-center flex-shrink-0">
-                                <span className="text-xs text-center p-2">
-                                  QR Code Placeholder
-                                </span>
-                              </div>
-                              <div className="w-full">
-                                <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-[#DDD3C3] border-dashed rounded-[12px] cursor-pointer bg-white hover:bg-[#F8F5EE] transition">
-                                  <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                                    {fileUploaded ? (
-                                      <>
-                                        <CheckCircle2
-                                          className="text-[#6D7C4A] mb-2"
-                                          size={24}
-                                        />
-                                        <p className="text-sm text-[#6D7C4A] font-bold">
-                                          Screenshot Uploaded
-                                        </p>
-                                      </>
-                                    ) : (
-                                      <>
-                                        <Upload
-                                          className="text-[#8A847A] mb-2"
-                                          size={24}
-                                        />
-                                        <p className="text-sm text-[#5F5B53]">
-                                          <span className="font-semibold text-[#D9A441]">
-                                            Click to upload
-                                          </span>
-                                        </p>
-                                      </>
-                                    )}
-                                  </div>
-                                  <input
-                                    type="file"
-                                    className="hidden"
-                                    onChange={() => setFileUploaded(true)}
-                                    accept="image/*"
-                                  />
-                                </label>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      {/* Date Selection */}
+                      <div>
+                        <label
+                          htmlFor="call-date"
+                          className="block text-sm font-medium text-[#222222] mb-2"
+                        >
+                          Select Date
+                        </label>
+                        <input
+                          id="call-date"
+                          type="date"
+                          min={new Date().toISOString().split("T")[0]}
+                          value={callDate}
+                          onChange={(e) => setCallDate(e.target.value)}
+                          className="w-full p-4 border border-[#DDD3C3] rounded-xl focus:outline-none focus:border-[#D9A441] transition bg-white"
+                        />
                       </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+
+                      {/* Time Slot Selection */}
+                      <div>
+                        <label
+                          htmlFor="time-slot"
+                          className="block text-sm font-medium text-[#222222] mb-2"
+                        >
+                          Select Time Slot
+                        </label>
+                        <select
+                          id="time-slot"
+                          value={callTimeSlot}
+                          onChange={(e) => setCallTimeSlot(e.target.value)}
+                          className="w-full p-4 border border-[#DDD3C3] rounded-xl focus:outline-none focus:border-[#D9A441] transition bg-white"
+                        >
+                          <option value="">Choose a time slot...</option>
+                          <option value="10am-11am">10am - 11am</option>
+                          <option value="11am-12pm">11am - 12pm</option>
+                          <option value="1pm-2pm">1pm - 2pm</option>
+                          <option value="2pm-3pm">2pm - 3pm</option>
+                          <option value="3pm-4pm">3pm - 4pm</option>
+                          <option value="4pm-5pm">4pm - 5pm</option>
+                          <option value="5pm-6pm">5pm - 6pm</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
 
                 {/* Error message */}
                 {error && (
@@ -458,20 +374,16 @@ export default function CheckoutPage() {
                   </button>
                   <button
                     onClick={handleConfirmOrder}
-                    disabled={
-                      isSubmitting ||
-                      !paymentMethod ||
-                      (paymentMethod === "cod" && !fileUploaded)
-                    }
+                    disabled={isSubmitting || !callDate || !callTimeSlot}
                     className="bg-[#A63D2F] text-white disabled:bg-gray-400 disabled:cursor-not-allowed hover:bg-[#8B3125] px-8 py-4 rounded-[14px] transition shadow-btn font-medium flex items-center gap-2"
                   >
                     {isSubmitting ? (
                       <>
                         <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                        Placing Order...
+                        Scheduling Call...
                       </>
                     ) : (
-                      "Confirm Order"
+                      "Confirm & Schedule"
                     )}
                   </button>
                 </div>
