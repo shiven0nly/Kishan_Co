@@ -1,12 +1,24 @@
-"use client";
-
+import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "About Our Mission | Empowering Farmers with Quality Seeds",
+  description: "Learn about KishanCo's journey to modernize farming. We provide 100% pure, lab-tested seeds directly to farmers with transparent pricing and expert guidance.",
+  keywords: ["kishanco mission", "agriculture technology India", "pure wheat seeds", "farmer empowerment", "seed quality control"],
+  openGraph: {
+    title: "About KishanCo | Our Commitment to Farmers",
+    description: "Empowering farmers with premium seeds and expert knowledge. Discover the KishanCo difference.",
+  },
+};
+
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 export default function AboutPage() {
   return (
     <div className="py-12 md:py-20 bg-[#F8F5EE] min-h-screen">
       <div className="container mx-auto px-4 md:px-6 max-w-7xl">
+        <Breadcrumbs />
         <div className="text-center mb-16">
           <h1 className="font-heading text-4xl md:text-5xl font-bold text-[#222222] mb-6">About KishanCo</h1>
           <p className="text-lg text-[#5F5B53] max-w-2xl mx-auto">
